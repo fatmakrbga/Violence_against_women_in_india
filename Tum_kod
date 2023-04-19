@@ -1,0 +1,511 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+#Kütüphaneleri ekliyoruz.
+
+pwd = os.getcwd()
+#df= pd.read_csv("İndia_Kadina_suç.csv")
+df= pd.read_csv(r'C:\Users\fatmanur\Desktop\CSV\Siddet.csv')
+print(df)
+#Veri Setini Ekledik
+
+df.head()
+#İlk 5 Veriyi görüyoruz.
+
+df.drop(["Unnamed: 0"],axis=1,inplace=True)
+#Gereksiz kolonları siliyoruz.
+
+df.head()
+
+df['DISTRICT'] = df['DISTRICT'].str.lower()
+#Harfleri büyütüyoruz.
+
+df['STATE/UT'] = df['STATE/UT'].str.lower()
+
+df.head()
+
+df = df.rename(columns={"STATE/UT":"Devlet"})
+df = df.rename(columns={"DISTRICT":"İlçe"})
+df = df.rename(columns={"Year":"Yıl"})
+df = df.rename(columns={"Rape":"Tecavüz"})
+df = df.rename(columns={"Kidnapping and Abduction":"Kaçma ve Kaçırılma"})
+df = df.rename(columns={"Dowry Deaths":"Çeyiz Ölümleri"})
+df = df.rename(columns={"Assault on women with intent to outrage her modesty":"Kadına Saldırma"})
+df = df.rename(columns={"Insult to modesty of Women":"Kadına Hakaret"})
+df = df.rename(columns={"Cruelty by Husband or his Relatives":"Eşi ve Akrabadan Zulüm"})
+df = df.rename(columns={"Importation of Girls":"Kadın İthalatı"})
+#Yeni isimler veriyoruz.
+
+df.head()
+
+df.shape
+#Bir dizinin boyutunu belli eder.
+
+df.info()
+#Değişkenlerin tiplerine baktık.
+
+df.describe()
+#Sayısal verilere sahip olan sütunların
+#istatiksel değerlerini döndürür
+
+df.head()
+
+df['Devlet'].nunique()
+#Eksik verileri ihmal ederek, benzersiz değerleri döndürüyor.
+
+df['Devlet'].unique()
+#Eksik verileri ihmal etmeden, benzersiz değerleri döndürüyor.
+
+df['Devlet'].value_counts()
+#Verilerin sayısını gösteriyor.
+
+filt = (df['Devlet'] == 'a&n islands') | (df['Devlet'] == 'd&n haveli')
+#Bir değişkene aldığım değerleri atıyorum.
+
+df[filt]
+#Tanımladığım değişkeni çağırıyorum.
+
+df.drop([9805,9808],axis=0,inplace=True)
+#İstediğimiz satırları siliyoruz.
+
+df.drop([9811,9812], axis=0,inplace=True)
+df.drop([10647,10648], axis=0,inplace=True)
+
+df['Devlet'].unique()
+
+df['Devlet'].value_counts()
+
+df[(df['Devlet']== 'a&n islands')]
+
+df.drop([9806,9807] , axis=0, inplace=True)
+
+df['Devlet'].value_counts()
+
+df['Devlet'].unique()
+
+df.head()
+
+df.shape
+
+df['İlçe'].unique()
+
+df['İlçe'].nunique()
+
+df2 = df[(df['İlçe'] == 'total')]
+
+df2
+
+df['Yıl'].unique()
+
+df2.head(10)
+
+df4 = df[(df['Devlet'] == 'andhra pradesh') & (df['Yıl'] == 2001)]
+df4.head()
+
+df4.sum()
+
+df2.head()
+
+kaçış = df2.groupby('Yıl')['Kaçma ve Kaçırılma'].sum().reset_index()
+kaçış
+#Kaçma ve Kaçırılma sütununu yıllara göre grupladık.
+
+import seaborn as sns
+sns.set_theme()
+from turtle import color
+from turtle import title
+
+plt.figure(figsize=(8,6))
+sns.lineplot(data=kaçış,x='Yıl',y='Kaçma ve Kaçırılma')
+#Grupladığımız verileri çizdirelim
+
+Tecavüz = df2.groupby("Yıl")["Tecavüz"].sum().reset_index()
+Tecavüz.head()
+#Tecavüz ve Yıl sütunlarını grup yapıyoruz.
+
+plt.figure(figsize=(8,6))
+sns.lineplot(data=Tecavüz,x='Yıl',y='Tecavüz', color = 'blue',label='Tecavüz').set(title='Tecavüz ve Kaçış')
+sns.lineplot(data=kaçış,x='Yıl',y='Kaçma ve Kaçırılma', color = 'red',label='Kaçış')
+plt.ylabel('Olayların Sayısı')
+
+plt.figure(figsize=(8,6))
+sns.lineplot(data=Tecavüz,x='Yıl',y='Tecavüz').set(title='Yıllara Göre Tecavüz')
+
+Çeyiz = df2.groupby('Yıl')['Çeyiz Ölümleri'].sum().reset_index()
+Çeyiz.head()
+
+sns.lineplot(data=Çeyiz,x='Yıl',y='Çeyiz Ölümleri',color='black').set(title='Çeyiz Nedeniyle Ölüm')
+
+df2.head()
+
+data_2012 = df2[(df2['Yıl'] == 2012)]
+data_2012.head()
+#2012 Yıllarına ait verileri çekiyoruz.
+
+data_2012 = data_2012[["Devlet","Tecavüz"]].reset_index(drop=True)
+data_2012.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_2012,x='Devlet',y='Tecavüz').set(title='2012 deki Tecavüz Sayısı')
+sns.lineplot(data=data_2012)
+plt.xticks(rotation=90)
+#2012 Yılındaki Devletlere göre tecavüz sayısına ait grafik oluşturuyoruz.
+
+df5 = df2[(df2['Yıl'] == 2001)]
+df5.head()
+
+data_df5 = df5[["Devlet","Eşi ve Akrabadan Zulüm"]].reset_index(drop=True)
+data_df5.head()
+
+plt.figure(figsize=(15,6))
+sns.barplot(data=data_df5,x='Devlet',y='Eşi ve Akrabadan Zulüm').set(title='Devlet ve Zulümün Birleşimi')
+plt.xticks(rotation=90)
+
+df2.head()
+
+MP = df2[(df2['Devlet'] == 'madhya pradesh')]
+MP.head()
+#Madya Pradesh'e göre sıraladık.
+
+MP_Rape = MP.groupby('Yıl')['Tecavüz'].sum().reset_index()
+MP_Rape.head()
+
+plt.figure(figsize=(8,5))
+sns.lineplot(data=MP_Rape,x='Yıl',y='Tecavüz')
+
+#df
+kaçış = df2.groupby('Devlet')['Kaçma ve Kaçırılma'].sum().reset_index()
+kaçış.head(10)
+
+data_kaçış = kaçış[["Devlet","Kaçma ve Kaçırılma"]].reset_index(drop=True)
+data_kaçış.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_kaçış,x='Devlet',y='Kaçma ve Kaçırılma').set(title='Devlet, Kaçma ve Kaçırılmanın Birleşimi')
+plt.xticks(rotation=90)
+#Devletler ve Kaçma,Kaçırılma Olaylarını birleştiriyoruz.
+
+Çeyiz = df2.groupby('Devlet')['Çeyiz Ölümleri'].sum().reset_index()
+Çeyiz.head(10)
+
+data_Çeyiz = Çeyiz[["Devlet","Çeyiz Ölümleri"]].reset_index(drop=True)
+data_Çeyiz.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Çeyiz,x='Devlet',y='Çeyiz Ölümleri').set(title='Devlet ve Çeyiz Ölümlerinin Birleşimi')
+plt.xticks(rotation=90)
+
+Saldırı = df2.groupby('Devlet')['Kadına Saldırma'].sum().reset_index()
+Saldırı.head(10)
+
+data_Saldırı = Saldırı[["Devlet","Kadına Saldırma"]].reset_index(drop=True)
+data_Saldırı.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Saldırı,x='Devlet',y='Kadına Saldırma').set(title='Devlet ve Kadına Saldırmanın Birleşimi')
+plt.xticks(rotation=90)
+
+Hakaret = df2.groupby('Devlet')['Kadına Hakaret'].sum().reset_index()
+Hakaret.head(10)
+
+data_Hakaret = Hakaret[["Devlet","Kadına Hakaret"]].reset_index(drop=True)
+data_Hakaret.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Hakaret,x='Devlet',y='Kadına Hakaret').set(title='Devlet ve Kadına Hakaretin Birleşimi')
+plt.xticks(rotation=90)
+
+Fuhuş = df2.groupby('Devlet')['Kadın İthalatı'].sum().reset_index()
+Fuhuş.head(10)
+
+data_Fuhuş = Fuhuş[["Devlet","Kadın İthalatı"]].reset_index(drop=True)
+data_Fuhuş.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Fuhuş,x='Devlet',y='Kadın İthalatı').set(title='Devlet ve Kadın İthalatının Birleşimi')
+plt.xticks(rotation=90)
+
+import pandas as pd
+ft= pd.read_csv(r'C:\Users\fatmanur\Desktop\CSV\Okuryazarlık.csv')
+print(ft)
+
+ft.head()
+
+ft.drop(["Unnamed: 0"],axis=1,inplace=True)
+#Gereksiz kolonları siliyoruz.
+
+ft = ft.rename(columns={"Literacy":"Okuryazarlık Oranı"})
+ft = ft.rename(columns={"State":"Devlet"})
+
+ft.head()
+
+ft.shape
+
+ft.info()
+
+ft.describe()
+
+ft['Devlet'].nunique()
+
+ft['Devlet'].unique()
+
+ft['Devlet'].value_counts()
+
+ft = ft.rename(columns={"District":"İlçe"})
+
+#ft['İlçe'].nunique()
+ft['İlçe'].unique()
+
+df['İlçe'].unique()
+
+ft['İlçe'] = ft['İlçe'].str.lower()
+
+ft['Devlet'] = ft['Devlet'].str.lower()
+
+ft['Devlet'] = ft['Devlet'].str.lstrip()
+
+ft['İlçe'] = ft['İlçe'].str.lstrip()
+
+df3 = pd.merge(df, ft)
+df3
+
+Dvlt = df3['Devlet']
+Dvlt.head()
+
+#Dvlt = Dvlt[["Devlet","İlçe"]].reset_index(drop=True)
+#Dvlt.head()
+
+Dvlt = df3.groupby('Devlet')['Okuryazarlık Oranı'].sum().reset_index()
+Dvlt.head(10)
+
+data_Dvlt = Dvlt[["Devlet","Okuryazarlık Oranı"]].reset_index(drop=True)
+data_Dvlt.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Dvlt,x='Devlet',y='Okuryazarlık Oranı').set(title='Devletlere Göre Okuryazarlık Oranı')
+plt.xticks(rotation=90)
+
+Tecavüz = df3.groupby('Devlet')['Tecavüz'].sum().reset_index()
+Tecavüz.head(10)
+
+data_Tecavüz = Tecavüz[["Devlet","Tecavüz"]].reset_index(drop=True)
+data_Tecavüz.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Tecavüz,x='Devlet',y='Tecavüz').set(title='Devletlere Göre Tecavüz Sayıları')
+plt.xticks(rotation=90)
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df3['Yıl'],df3['Tecavüz'],df3['Okuryazarlık Oranı'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df3['Yıl'],df3['Kaçma ve Kaçırılma'],df3['Okuryazarlık Oranı'])
+
+df3.head()
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df3['Yıl'],df3['Çeyiz Ölümleri'],df3['Okuryazarlık Oranı'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df3['Yıl'],df3['Kadına Saldırma'],df3['Okuryazarlık Oranı'])
+
+dt= pd.read_csv(r'C:\Users\fatmanur\Desktop\CSV\Ekonomi.csv')
+print(dt)
+
+dt.head()
+
+dt = dt.rename(columns={"Series Name":"Yıl"})
+dt = dt.rename(columns={"Population, total":"Toplam Nüfus"})
+dt = dt.rename(columns={"Inflation, GDP deflator (annual %)":"Enflasyon,(yıllık %)"})
+
+dt.head()
+
+#dt.drop('Life expectancy at birth, total (years)',axis=1, inplace=True)
+dt.drop('GDP (current US$)',axis=1, inplace=True)
+dt.drop('GDP growth (annual %)',axis=1, inplace=True)
+dt.drop('Agriculture, forestry, and fishing, value added (% of GDP)',axis=1, inplace=True)
+dt.drop('Industry (including construction), value added (% of GDP)',axis=1, inplace=True)
+dt.drop('Exports of goods and services (% of GDP)',axis=1, inplace=True)
+dt.drop('Imports of goods and services (% of GDP)',axis=1, inplace=True)
+dt.drop('Military expenditure (% of GDP)',axis=1, inplace=True)
+dt.drop('Merchandise trade (% of GDP)',axis=1, inplace=True)
+dt.drop('Foreign direct investment, net inflows (BoP, current US$)',axis=1, inplace=True)
+
+dt.head()
+
+dt.drop('Population growth (annual %)',axis=1, inplace=True)
+
+dt.head()
+
+dt.shape
+
+dt.info()
+
+dt.describe()
+
+dt['Yıl'].nunique()
+
+dt['Yıl'].unique()
+
+dt['Yıl'].value_counts()
+
+df4 = pd.merge(df,dt)
+df4
+
+Devlet = df4.groupby('Devlet')['Enflasyon,(yıllık %)'].sum().reset_index()
+Devlet.head(10)
+
+data_Devlet = Devlet[["Devlet","Enflasyon,(yıllık %)"]].reset_index(drop=True)
+data_Devlet.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Devlet,x='Devlet',y='Enflasyon,(yıllık %)').set(title='Yıllara Göre Enflasyon Oranı')
+plt.xticks(rotation=90)
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Tecavüz'],df4['Enflasyon,(yıllık %)'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Kaçma ve Kaçırılma'],df4['Enflasyon,(yıllık %)'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Kadın İthalatı'],df4['Enflasyon,(yıllık %)'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Çeyiz Ölümleri'],df4['Enflasyon,(yıllık %)'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Kadına Saldırma'],df4['Enflasyon,(yıllık %)'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Kadına Hakaret'],df4['Enflasyon,(yıllık %)'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Eşi ve Akrabadan Zulüm'],df4['Enflasyon,(yıllık %)'])
+
+data_Nüfus = df4[["Devlet","Toplam Nüfus"]].reset_index(drop=True)
+data_Nüfus.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Nüfus,x='Devlet',y='Toplam Nüfus').set(title='Devletlere Göre Toplam Nüfus Oranı')
+plt.xticks(rotation=90)
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Tecavüz'],df4['Toplam Nüfus'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Kaçma ve Kaçırılma'],df4['Toplam Nüfus'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Çeyiz Ölümleri'],df4['Toplam Nüfus'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Kadına Saldırma'],df4['Toplam Nüfus'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Kadına Hakaret'],df4['Toplam Nüfus'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Eşi ve Akrabadan Zulüm'],df4['Toplam Nüfus'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df4['Yıl'],df4['Kadın İthalatı'],df4['Toplam Nüfus'])
+
+ds= pd.read_csv(r'C:\Users\fatmanur\Desktop\CSV\Siber_Suc.csv',encoding="ISO-8859-1")
+print(ds)
+
+ds.head()
+
+ds.drop(["Index column"],axis=1,inplace=True)
+#Gereksiz kolonları siliyoruz.
+
+ds.head()
+
+ds.shape
+
+ds.info()
+
+ds.describe()
+
+ds['Devlet'].nunique()
+
+ds['Devlet'].unique()
+
+ds['Devlet'].value_counts()
+
+ds['Devlet'] = ds['Devlet'].str.lower()
+
+ds.head()
+
+ds['Devlet'] = ds['Devlet'].str.lstrip()
+
+ds.head()
+
+df5 = pd.merge(df,ds)
+df5
+
+Dvlt = df5.groupby('Devlet')['Siber Suç'].sum().reset_index()
+Dvlt.head(10)
+
+data_Devlt = df5[["Devlet","Siber Suç"]].reset_index(drop=True)
+data_Devlt.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Devlt,x='Devlet',y='Siber Suç').set(title='Devletlere Göre Siber Suç Oranı')
+plt.xticks(rotation=90)
+
+data_Yl = df5[["Yıl","Siber Suç"]].reset_index(drop=True)
+data_Yl.head()
+
+plt.figure(figsize=(15,8))
+sns.barplot(data=data_Yl,x='Yıl',y='Siber Suç').set(title='Yıllara Göre Siber Suç Oranı')
+plt.xticks(rotation=90)
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df5['Yıl'],df5['Tecavüz'],df5['Siber Suç'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df5['Yıl'],df5['Kaçma ve Kaçırılma'],df5['Siber Suç'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df5['Yıl'],df5['Çeyiz Ölümleri'],df5['Siber Suç'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df5['Yıl'],df5['Kadına Saldırma'],df5['Siber Suç'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df5['Yıl'],df5['Kadına Hakaret'],df5['Siber Suç'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df5['Yıl'],df5['Eşi ve Akrabadan Zulüm'],df5['Siber Suç'])
+
+plt.figure(figsize=(10,8))
+ax= plt.axes(projection='3d')
+fg= ax.scatter3D(df5['Yıl'],df5['Kadın İthalatı'],df5['Siber Suç'])
+
+
