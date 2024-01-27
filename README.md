@@ -1,5 +1,5 @@
 # Violence_against_women_in_india
-TÜM KOD ALANINDA VERİLEN KODLARI SIRASI İLE JUPYTER NOTEBOOK / ANACONDA İLE ÇALIŞTIRINIZ. GRAFİKLERLE ANALİZ GÖRECEKSİNİZ.
+<!--VERİLEN KODLARI SIRASI İLE JUPYTER NOTEBOOK / ANACONDA İLE ÇALIŞTIRINIZ. GRAFİKLERLE ANALİZLERİ GÖREBİLECEKSİNİZ.-->
 Siddet, yaşamımızdaki en önemli problemlerden birisidir. 
 Kadına ¸Siddet olayları; tecavüz, kaçma ve kaçırılma, çeyiz ölümleri, kadına saldırma, kadına hakaret, eşi ve akrabadan zulüm, kadın ithalatı olarak sınıflandırılmıştır.
 Şiddet olaylarının sınıflandırılabilmesi toplumlar adına bir gerilemedir.
